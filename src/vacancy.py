@@ -39,6 +39,7 @@ class Vacancy:
         График работы: {self.schedule}
         Требования к опыту работы: {self.experience}
         Обязанности: {self.responsibility}
-        Требования к кандидату: {self.requirement}\n-------------------------------------
+        Требования к кандидату: {self.requirement}
+        -------------------------------------
         """
 

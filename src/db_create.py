@@ -10,15 +10,16 @@ class DBCreate:
     database_name: str
     params: dict
 
-    def __init__(self, DATABASE_NAME, params):
-        """ Инициация класса, где определяем - подключение, курсор, структуру БД, текст основного запроса"""
 
+    def __init__(self, database_name, params):
+        """ Инициация класса, где определяем - подключение, курсор, структуру БД, текст основного запроса"""
         self.__structure_database = {}
         self.conn = None
         self.cur = None
-        self.database_name = DATABASE_NAME
+        self.database_name = database_name
         self.params = params
         self.connect()
+
 
     @property
     def structure_database(self):
@@ -34,6 +35,7 @@ class DBCreate:
                          'area_id varchar(15), url text, employment_id varchar(25), experience_id varchar(50), schedule_id varchar(25), '
                          'requirement text, responsibility text'
         }
+
 
     def connect(self):
         """ Подключиться к БД"""
@@ -54,45 +56,35 @@ class DBCreate:
             # создаем новую бд
             self.cur.execute(f'CREATE DATABASE {self.database_name}')
 
-            # delete all table, because tables aren't deleted
-            try:
-                self.cur.execute(f'DROP TABLE vacancies')
-                self.cur.execute(f'DROP TABLE employments')
-                self.cur.execute(f'DROP TABLE experiences')
-                self.cur.execute(f'DROP TABLE schedules')
-                self.cur.execute(f'DROP TABLE areas')
-                self.cur.execute(f'DROP TABLE employers')
-            except:
-                pass
-
         except BaseException as err:
             print('Ошибка создания базы данных')
             raise err
 
+        # delete all table, because my tables aren't deleted - sd didn't replay me about it
+        try:
+            self.cur.execute(f'DROP TABLE vacancies')
+            self.cur.execute(f'DROP TABLE employments')
+            self.cur.execute(f'DROP TABLE experiences')
+            self.cur.execute(f'DROP TABLE schedules')
+            self.cur.execute(f'DROP TABLE areas')
+            self.cur.execute(f'DROP TABLE employers')
+        except psycopg2.DatabaseError as err:
+            pass
+
         self.cur.close()
         self.conn.close()
 
-        # TEST!!!
-        #self.connect()
-        #self.cur.execute(f'insert into employers (id, name) VALUES (%s, %s)', ('2', 'test'))
-        #self.cur.execute('select * from employers')
-        #print(self.cur.fetchall())
-        #exit()
-        # end test
 
     def create_table(self):
         """ Создать таблицы из структуры (атрибут structure_database)"""
-
         # подключаемся к БД
         self.connect()
-
 
         # получим структуру таблиц из атрибута __structure_database
         self.__structure_database = self.structure_database
 
         for name_table,fields in self.__structure_database.items():
-            self.cur.execute(f'CREATE TABLE IF NOT EXISTS {name_table} ({fields})')
-            #print(f'Create table {name_table}')
+            self.cur.execute(f'CREATE TABLE {name_table} ({fields})')
 
         self.conn.commit()
         self.conn.close()
@@ -100,10 +92,8 @@ class DBCreate:
 
     def insert_employers(self, data: dict, related_data: dict):
         """ Записать работодателей в таблицу"""
-
         try:
             for item in data:
-                #print(item)
                 self.cur.execute(
                     """
                         INSERT INTO employers (id, name, description, url, vacancies_url, area_id)
@@ -123,9 +113,9 @@ class DBCreate:
             self.conn.commit()
             self.conn.close()
 
+
     def insert_vacancies(self, data: dict, related_data: dict):
         """ Записать вакансии в таблицу"""
-
         try:
             for item in data:
                 # print(item)
@@ -185,12 +175,14 @@ class DBCreate:
             self.conn.commit()
             self.conn.close()
 
+
     def insert_areas(self, list_codes: list, key: str, items: list):
         """ Добавить данные в таблицу локаций, если данных еще нет
         в list_codes список id, которые уже добавлены"""
         if key not in list_codes:
             self.cur.execute('INSERT INTO areas (id, name, url) VALUES (%s, %s, %s)', (items[0], items[1], items[2]))
             list_codes.append(key)
+
 
     def insert_schedules(self, list_codes: list, key: str, items: list):
         """ Добавить данные в таблицу расписание, если данных еще нет
@@ -199,12 +191,14 @@ class DBCreate:
             self.cur.execute('INSERT INTO schedules (id, name) VALUES (%s, %s)', (items[0], items[1]))
             list_codes.append(key)
 
+
     def insert_experiences(self, list_codes: list, key: str, items: list):
         """ Добавить данные в таблицу опыт работы, если данных еще нет
         в list_codes список id, которые уже добавлены"""
         if key not in list_codes:
             self.cur.execute('INSERT INTO experiences (id, name) VALUES (%s, %s)', (items[0], items[1]))
             list_codes.append(key)
+
 
     def insert_employments(self, list_codes: list, key: str, items: list):
         """  Добавить данные в таблицу графика работы, если данных еще нет

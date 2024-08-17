@@ -103,6 +103,7 @@ def execute_request(mode, keyword:str = ''):
 
     # вывод вакансий по ключевым словам
     elif mode == '4':
+        print(keyword)
         result_request = db_manager.get_vacancies_with_keyword(keyword)
         return get_list_vacancy(result_request)
 

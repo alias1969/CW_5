@@ -22,7 +22,7 @@ class Employer:
         Город: {self.area}
         Количество вакансий: {self.count_vacancies}
         Ссылка на профиль компании: {self.url}
-        Ссылка на вакансии компании: {self.vacancies_url} 
+        Ссылка на вакансии компании: {self.vacancies_url}
         -------------------------------------
         """
 
