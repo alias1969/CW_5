@@ -2,7 +2,6 @@ from src.vacancy import Vacancy
 
 def test_vacancy_init(vacancy):
     """ Тест инициализации класса """
-
     assert vacancy.id == '1234'
     assert vacancy.name == 'Менеджер по работе с клиентами'
     assert vacancy.employer == 'Марс'

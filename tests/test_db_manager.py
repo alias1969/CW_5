@@ -1,5 +1,5 @@
 from src.db_create import DBCreate
-from src.utils import insert_data
+from src.utils import insert_data, create_database
 from config import PARAMS, DATABASE_NAME
 from src.db_manager import DBManager
 
@@ -77,42 +77,3 @@ def test_get_top_salaries(db_manager):
     assert len(result_request) > 1
     assert type(result_request[0]) is tuple
 
-def create_database():
-    """ Для тестирования выборки, нужно создать и наполнить базу данных"""
-    data_for_insert_employers = [{'id': '4307', 'name': 'Московская Биржа', 'description': 'Очень крутая компания',
-            'alternate_url': 'https://hh.ru/employer/1057', 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=1057',
-            'area': {'id': '26', 'name': 'Воронеж', 'url': 'https://api.hh.ru/areas/26'}}]
-    data_for_insert_vacancies = [{'id': '105537264',
-            'name': 'Оператор call-центра',
-            'area': {'id': '26', 'name': 'Воронеж', 'url': 'https://api.hh.ru/areas/26'},
-            'salary': {'from': 50000, 'to': None, 'currency': 'RUR', 'gross': True},
-            'alternate_url': 'https://hh.ru/vacancy/105537264',
-            'employer': {'id': '4307', 'name': 'Московская Биржа', 'url': 'https://api.hh.ru/employers/4307', 'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=4307'},
-            'snippet': {'requirement': 'Готовы к удаленной работе — это ответственно, но еще и удобно. Умеете и уже работали с большими объёмами информации. ',
-                        'responsibility': 'Звонить клиентам Финуслуг по телефону (не холодная база, клиенты о нас уже знают). Презентовать им продукты и услуги, которые мы...'},
-            'schedule': {'id': 'remote', 'name': 'Удаленная работа'}, 'experience': {'id': 'noExperience', 'name': 'Нет опыта'},
-            'employment': {'id': 'full', 'name': 'Полная занятость'},
-            },
-            {'id': '105537269',
-             'name': 'Менеджер по продажам',
-             'area': {'id': '26', 'name': 'Москва', 'url': 'https://api.hh.ru/areas/26'},
-             'salary': {'from': 70000, 'to': 80000, 'currency': 'RUR', 'gross': True},
-             'alternate_url': 'https://hh.ru/vacancy/105537264',
-             'employer': {'id': '4307', 'name': 'Московская Биржа', 'url': 'https://api.hh.ru/employers/4307',
-                          'vacancies_url': 'https://api.hh.ru/vacancies?employer_id=4307'},
-             'snippet': {
-                 'requirement': 'Готовы к удаленной работе — это ответственно, но еще и удобно. Умеете и уже работали с большими объёмами информации. ',
-                 'responsibility': 'Звонить клиентам Финуслуг по телефону (не холодная база, клиенты о нас уже знают). Презентовать им продукты и услуги, которые мы...'},
-             'schedule': {'id': 'remote', 'name': 'Удаленная работа'},
-             'experience': {'id': 'noExperience', 'name': 'Нет опыта'},
-             'employment': {'id': 'full', 'name': 'Полная занятость'},
-             }
-            ]
-
-    db_create = DBCreate(DATABASE_NAME, PARAMS)
-    db_create.create_database()
-    db_create.create_table()
-    insert_data(data_for_insert_employers, data_for_insert_vacancies)
-
-create_database()
-db_manager = DBManager(DATABASE_NAME, PARAMS)
