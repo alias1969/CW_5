@@ -14,6 +14,7 @@ class APIHeadHunter(APIGetData):
         self.headers = {"User-Agent": "HH-User-Agent"}
         self.params = {'page': 0, 'per_page': PER_PAGES, "only_with_salary": ONLY_WITH_SALARY}
 
+
     def get_response(self) -> Response:
         """ Отправить запрос на сайт """
         self.url = self.url
